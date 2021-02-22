@@ -1,6 +1,6 @@
 ARCH=arm
 
-TARGET_CCPATH=
+TARGET_CCPATH=/opt/toolchain/gnu/arm/lin/bin/
 TARGET_CCPREFIX=arm-xilinx-eabi-
 
 TARGET_AS=${TARGET_CCPATH}${TARGET_CCPREFIX}as
