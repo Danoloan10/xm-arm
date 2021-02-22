@@ -1,0 +1,74 @@
+# - [18/11/2015:SPR-151118-01:#93] CONFIG_UART_FLOWCONTROL tag is not available for ZYNQ boards
+# - [18/11/2015:SPR-151118-01:#93] Early Uart configuration inside a menu
+# - [15/12/2015:SPR-150527-01:#51] Add tag XM_LOAD_DATA_SIZE. Size of data to be zeroed before load XM.
+# - [16/06/2016:CP-160616-01:#113] Add Uart clock freq configuration.
+
+mainmenu "RSW Configuration"
+
+source "Kconfig"
+
+menu "RSW memory layout"
+
+config CONTAINER_ADDR
+       hex "Container physical location address"
+       default "0x00300000"
+       depends on STAND_ALONE||CONTAINER_AT_FIXED_ADDR
+
+config RDONLY_SEC_ADDR
+       hex "Read-only section addresses"
+       default "0x00100000"
+
+config RW_SEC_ADDR
+       hex "Read/write section addresses"
+       default "0x00200000"
+
+endmenu
+
+config XM_LOAD_DATA_SIZE
+	   hex
+	   default "0x00000400"
+
+config CPU_FREQ_AUTO
+       bool "Autodetect CPU frequency"
+       default y
+
+config CPU_KHZ
+       int "CPU frequency (KHz)"
+       default "400000"
+       depends on OUTPUT_ENABLED&&!CPU_FREQ_AUTO
+
+config OUTPUT_ENABLED
+       bool "Enable RSW output"
+       default y
+
+if OUTPUT_ENABLED
+menu "UART Configuration"
+choice
+	prompt "Enable UART support"
+	default UART1
+        depends on OUTPUT_ENABLED
+
+config UART0
+       bool "UART0"
+config UART1
+       bool "UART1"
+endchoice
+
+config UART_BAUDRATE
+       int "UART baud rate"
+       default "115200"
+       depends on OUTPUT_ENABLED
+
+config XPAR_PS7_UART_0_UART_CLK_FREQ_HZ
+       int "UART 0 Reference Clock (Hz)"
+       depends on (OUTPUT_ENABLED&&UART0)
+       default 50000000
+
+config XPAR_PS7_UART_1_UART_CLK_FREQ_HZ
+       int "UART 1 Reference Clock (Hz)"
+       depends on (OUTPUT_ENABLED&&UART1)
+       default 50000000
+
+endmenu
+
+endif

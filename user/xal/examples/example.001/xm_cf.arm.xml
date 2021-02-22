@@ -1,0 +1,38 @@
+<SystemDescription xmlns="http://www.xtratum.org/xm-arm-2.x" version="1.0.0" name="timers">
+    <HwDescription>
+        <MemoryLayout>
+            <Region type="rom" start="0x0" size="1MB" />
+            <Region type="sdram" start="0x00100000" size="1023MB" />
+        </MemoryLayout>
+        <ProcessorTable>
+            <Processor id="0" frequency="400Mhz">
+                <CyclicPlanTable>
+                    <Plan id="0" majorFrame="4s">
+                      <Slot id="0" start="2s" duration="750ms" partitionId="0" />
+                      <Slot id="0" start="3s" duration="750ms" partitionId="1" />
+                    </Plan>
+                </CyclicPlanTable>
+            </Processor>
+        </ProcessorTable>
+        <Devices>
+            <Uart id="1" baudRate="115200" name="Uart" />
+        </Devices>
+    </HwDescription>
+
+    <XMHypervisor console="Uart">
+        <PhysicalMemoryArea size="512KB" />
+    </XMHypervisor>
+
+    <PartitionTable>
+        <Partition id="0" name="Partition0" flags="boot" console="Uart">
+            <PhysicalMemoryAreas>
+                <Area start="0x10000000" size="512KB" />
+            </PhysicalMemoryAreas>
+        </Partition>
+        <Partition id="1" name="Partition1" flags="boot" console="Uart">
+            <PhysicalMemoryAreas>
+                <Area start="0x14000000" size="512KB" />
+            </PhysicalMemoryAreas>
+        </Partition>
+    </PartitionTable>
+</SystemDescription>

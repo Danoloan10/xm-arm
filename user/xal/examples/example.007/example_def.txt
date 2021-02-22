@@ -1,0 +1,21 @@
+# Example : example.007
+
+# Description
+This example shows how to access devices from partitions.
+
+# Partition definition
+There are two partition that will print some registers from the devices.
+
+# Configuration table
+Basic configuration.
+
+A scheduling plan is defined under the following premises:
+
+MAF = 1 sec
+P0: S   0   ms  D 250 ms
+P1: S   500 ms  D 250 ms
+
+# Expected results
+\xm{} will load, initialise and run in user mode the partition. 
+During the execution, the partition will print some registers from the devices and halt.
+

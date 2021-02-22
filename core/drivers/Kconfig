@@ -1,0 +1,85 @@
+# Changelog:
+# - [18/11/2015:SPR-151118-01:#93] CONFIG_EARLY_CPU_MHZ tag is not needed for ZYNQ boards
+# - [18/11/2015:SPR-151118-01:#93] Early Uart configuration inside a menu
+# - [16/06/2016:CP-160616-01:#113] Add Uart clock freq configuration.
+menu "Drivers"
+
+config DEV_UART
+       tristate "Enable UART driver"
+       depends on LEON2 || LEON3 || LEON4 || ZYNQ
+       default y
+
+config DEV_UART_0
+       bool "Reserve UART0"
+       default "y"
+       depends on DEV_UART
+
+config DEV_UART_1
+       bool "Reserve UART1"
+       default "y"
+       depends on DEV_UART
+
+config XPAR_PS7_UART_0_UART_CLK_FREQ_HZ
+       int "XPAR_PS7_UART_0_UART_CLK_FREQ_HZ - UART 0 Reference Clock (Hz)"
+       depends on (DEV_UART&&DEV_UART_0&&ZYNQ)
+       default 50000000
+
+config XPAR_PS7_UART_1_UART_CLK_FREQ_HZ
+       int "XPAR_PS7_UART_1_UART_CLK_FREQ_HZ - UART 1 Reference Clock (Hz)"
+       depends on (DEV_UART&&DEV_UART_1&&ZYNQ)
+       default 50000000
+
+config EARLY_OUTPUT
+       bool "Enable early output"
+       depends on (DEV_UART&&(LEON2||LEON3||LEON4||ZYNQ))
+       default n
+
+if EARLY_OUTPUT
+menu   "Early UART Configuration"
+choice
+        prompt "Select early UART port"
+        default EARLY_UART1
+        depends on EARLY_OUTPUT&&(LEON2||LEON3||LEON4||ZYNQ)
+
+config EARLY_UART0
+       bool "UART0"
+       depends on DEV_UART_0
+
+config EARLY_UART1
+       bool "UART1"
+       depends on DEV_UART_1
+
+endchoice
+
+config EARLY_UART_BAUDRATE
+       int "Early UART baudrate"
+       depends on EARLY_OUTPUT&&(LEON2||LEON3||LEON4||ZYNQ)
+       default 115200
+
+endmenu
+endif
+
+config DEV_UART_FLOWCONTROL
+       bool "Enable UART flow control"
+       depends on (DEV_UART && !ZYNQ) 
+       default y
+
+config UART_ADD_CARRIAGE_RETURN
+       bool "Enable the addition of a carriage return at the end of the line."
+       depends on (DEV_UART_0 || DEV_UART_1)
+       default y
+
+config DEV_NO_UARTS
+       int
+       default "2"
+       depends on DEV_UART
+
+config UART_THROUGH_DSU
+       bool "DSU samples UART port"
+       depends on (LEON2 || LEON3||LEON4) && !(TSIM||ZYNQ)
+
+config DEV_MEMBLOCK
+       tristate "Enable memory block driver"
+       default y
+
+endmenu

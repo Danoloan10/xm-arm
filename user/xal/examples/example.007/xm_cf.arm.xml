@@ -1,0 +1,39 @@
+<SystemDescription xmlns="http://www.xtratum.org/xm-arm-2.x" version="1.0.0" name="example.007">
+    <HwDescription>
+        <MemoryLayout>
+            <Region type="rom" start="0x0" size="1MB" />
+            <Region type="sdram" start="0x00100000" size="1023MB" />
+            <Region type="sdram" start="0xe0000000" size="64KB" />
+        </MemoryLayout>
+        <ProcessorTable>
+            <Processor id="0" frequency="400Mhz">
+                <CyclicPlanTable>
+                    <Plan id="0" majorFrame="1000ms">
+                        <Slot id="0" start="0ms" duration="250ms" partitionId="0" />
+                        <Slot id="1" start="500ms" duration="250ms" partitionId="1" />
+                    </Plan>
+                </CyclicPlanTable>
+            </Processor>
+        </ProcessorTable>
+        <Devices>
+            <Uart id="1" baudRate="115200" name="Uart" />
+        </Devices>
+    </HwDescription>
+    <XMHypervisor console="Uart">
+        <PhysicalMemoryArea size="512KB" />
+    </XMHypervisor>
+    <PartitionTable>
+        <Partition id="0" name="uartExample" flags="boot" console="Uart">
+            <PhysicalMemoryAreas>
+                <Area start="0x10000000" size="256KB" />
+            </PhysicalMemoryAreas>
+            <HwResources><APBDev device="ZYNQ_DEV_UA0" /></HwResources>
+        </Partition>
+        <Partition id="1" name="i2cExample" flags="boot" console="Uart">
+            <PhysicalMemoryAreas>
+                <Area start="0x14000000" size="256KB" />
+            </PhysicalMemoryAreas>
+            <HwResources><APBDev device="ZYNQ_DEV_I2C0 ZYNQ_DEV_I2C1" /></HwResources>
+        </Partition>
+    </PartitionTable>
+</SystemDescription>

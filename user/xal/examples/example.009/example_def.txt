@@ -1,0 +1,50 @@
+# Example : example.009
+
+# Description
+This example shows how the access to DDR is performed.
+
+# Partition definition
+There are two partition that will access DDR memory with different conditions.
+
+# Test Configuration
+you must define the test number in the ddr.c.  This test has 4 variants.
+Please set the macro called "TEST" with a valid value [1-4].
+
+*Variant 1
+Partition access its own memory.
+
+*Variant 2
+Partition access its own memory but is not mapped (unmaped in the test).
+
+*Variant 3
+Partition access  out of its own memory. Before the access the partition mapps the memory.
+
+*Variant 4
+Partition access  out of its own memory. Before the access the partition does not mapp the memory.
+
+
+# Configuration table
+Basic configuration.
+
+A scheduling plan is defined under the following premises:
+
+MAF = 2 sec
+P0: S   0   ms  D 250 ms
+P1: S   500 ms  D 250 ms
+
+# Expected results
+\xm{} will load, initialise and run in user mode the partition. 
+During the execution, the partition will access the memory and halt.
+
+*Variant 1
+Partition access memory.
+No fail is reported.
+
+*Variant 2
+DataAbort is expected (MMU Abort).
+
+*Variant 3
+DataAbort is expected (TrustZone Abort).
+
+*Variant 4
+DataAbort is expected (MMU Abort).

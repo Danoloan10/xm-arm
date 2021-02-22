@@ -1,0 +1,24 @@
+# Example : example.010
+
+# Description
+This example shows how to access OCM memory from an XtratuM partition.
+
+# Partition definition
+There are two partitions:
+	- P0 should Read and write from OCM memory.
+	- P1 should be placed and executed in OCM.
+
+# Configuration table
+Basic configuration.
+
+A scheduling plan is defined under the following premises:
+
+MAF = 2 sec
+P0: S   0   ms  D 950 ms
+P1: S   1   ms  D 950 ms
+
+# Expected results
+\xm{} will load, initialize and run in user mode the partition. 
+During the execution:
+	The partition 0 will print the values read and written from OCM.
+	The partition 1 will run in OCM print the Partition memory map.

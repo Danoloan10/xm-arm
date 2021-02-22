@@ -1,0 +1,17 @@
+#
+# Automatically generated make config: don't edit
+# XM version: 2.0.3
+# Wed Jan 27 14:13:18 2016
+#
+CONFIG_ARCH="arm"
+CONFIG_KERNELVERSION="2.0.3"
+CONFIG_XM_VERSION=2
+CONFIG_XM_SUBVERSION=0
+CONFIG_XM_REVISION=3
+# CONFIG_DEBUG is not set
+
+#
+# Kernel options
+#
+CONFIG_STACK_KB=8
+CONFIG_STACK_EXCPT_KB=1

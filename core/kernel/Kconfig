@@ -1,0 +1,141 @@
+config EXPERIMENTAL
+       bool "Enable experimental features"
+       default n
+
+config ASSERT
+       bool "Enable assertions"
+       default y
+
+menuconfig DEBUG
+	   bool "Debug and profiling support"
+	   default y
+	   
+if DEBUG
+config VERBOSE_TRAP
+       bool "Dump CPU state when a trap is raised"
+       default y
+
+config DEBUG_HYPERCALL
+       bool "Verbose hypercalls execution"
+       default n
+endif
+
+config NO_GCC_OPT
+       bool
+       default n
+
+config ID_STRING_LENGTH
+       int "Max. identifier length (B)"
+       default "16"
+
+menu "Hypervisor"
+
+config VOLUNTARY_PREEMPTION
+       bool "Enable voluntary preemption support"
+       default "n"
+       depends on EXPERIMENTAL
+
+config KSTACK_KB
+       int "Kernel stack size (KB)"
+       default "8"
+
+config NO_VCPUS
+       int "Number of virtual CPUs"
+       default "1"
+
+config MAX_NO_IPVI
+       int "Number of IPVIs"
+       default "4"
+
+config MAX_NO_MAREAS
+       int
+       default "8"
+
+config PLAN_EXTSYNC
+       bool "Enable external synchronisation"
+       default "n"
+
+config AUDIT_EVENTS     
+       bool "Enable kernel audit events"
+       default "n"
+  
+menu "L1 cache policy for XM"   
+choice
+       prompt "Select XM Data section cache policy"
+       default DCACHE_L1_POLICY_WB_WA
+       depends on ENABLE_CACHE
+
+config DCACHE_L1_POLICY_WB_WA
+       bool "Write-back/write-allocate"
+       --help---
+       Select this for a write-back/write-allocate L1 cache policy for XM Data section.
+       
+config DCACHE_L1_POLICY_UNCACHEABLE
+       bool "Uncacheable"
+       --help---
+       Select this for a non-cacheable L1 cache policy for XM Data section.
+       
+endchoice
+          
+choice
+       prompt "Select XM Code section cache policy"
+       default ICACHE_L1_POLICY_WB_WA
+       depends on ENABLE_CACHE
+
+config ICACHE_L1_POLICY_WB_WA
+       bool "Write-back/write-allocate"
+       --help---
+       Select this for a write-back/write-allocate L1 cache policy for XM Code section.
+
+config ICACHE_L1_POLICY_WT_NWA
+       bool "Write-through/no write-allocate"
+       --help---
+       Select this for a write-through/no write-allocate L1 cache policy for XM Code section.
+       
+config ICACHE_L1_POLICY_WB_NWA
+       bool "Write-back/no write-allocate"
+       --help---
+       Select this for a write-back/no write-allocate L1 cache policy for XM Code section.
+       
+endchoice
+endmenu 
+ 
+      
+choice
+       prompt "Select L1 cache policy for partitions"
+       default CACHE_L1_PARTITION_POLICY_WB_WA
+       depends on ENABLE_CACHE
+
+config CACHE_L1_PARTITION_POLICY_WB_WA
+       bool "Write-back/write-allocate"
+       --help---
+       Select this for a write-back/write-allocate L1 cache policy for partitions.
+
+config CACHE_L1_PARTITION_POLICY_WT_NWA
+       bool "Write-through/no write-allocate"
+       --help---
+       Select this for a write-through/no write-allocate L1 cache policy for partitions.
+       
+config CACHE_L1_PARTITION_POLICY_WB_NWA
+       bool "Write-back/no write-allocate"
+       --help---
+       Select this for a write-back/no write-allocate L1 cache policy for partitions.
+       
+endchoice
+       
+endmenu
+
+source "Kconfig.ver"
+
+if MMU
+source "kernel/mmu/Kconfig"
+endif
+
+if MPU
+source "kernel/mpu/Kconfig"
+endif
+
+source "klibc/Kconfig"
+
+source "drivers/Kconfig"
+source "objects/Kconfig"

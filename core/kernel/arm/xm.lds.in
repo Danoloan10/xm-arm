@@ -1,0 +1,188 @@
+/*
+ * $FILE: xm.lds
+ *
+ * ld script to build the arm version
+ *
+ * $VERSION$
+ *
+ * Author: Miguel Masmano <mmasmano@fentiss.com>
+ * Author: Manuel Muñoz      <mmunoz@ai2.upv.es>
+ * Author: Javier O. Coronel <jcoronel@fentiss.com>
+ *
+ * $LICENSE:
+ * COPYRIGHT (c) Fent Innovative Software Solutions S.L.
+ *     Read LICENSE file for the license terms.
+ */
+/*
+ * Changelog:
+ * - [21/01/16:XM-ARM-2:SPR-150608-03:#57] Fix SystemReset on SMP.
+ * - [15/02/16:XM-ARM-2:SPR-160215-01:#109] Delete deprecated nonSecure areas.
+ * - [15/02/16:XM-ARM-2:SPR-160215-02:#110] Place xmcTab in XM_LOAD_DATA_ADDRESS space.
+ * - [21/10/16:XM-ARM-2:SPR-161013-01:#126] Reserve a LargePage (1Mb)  for PCT, at the end of XM code map.
+ * - [21/11/16:XM-ARM-2:SPR-161121-01:#130] XM NonSecure sections mapped in a PAGE (4kB) just after XM code.
+ * - [31/01/17:XM-ARM-2:CP-161019-01:#143] Provide space for the default memory Map PTDL1.
+ * - [31/01/17:XM-ARM-2:CP-161019-01:#143] Provide symbols to identify XM NSExecution area and align it.
+ */
+
+#include <config.h>
+
+#ifdef arm
+#undef arm
+#endif
+/*OUTPUT_FORMAT("arm-elf", "arm-elf", "arm-elf")*/
+OUTPUT_ARCH(arm)
+ENTRY(_start)
+
+PHYSOFFSET = - CONFIG_XM_OFFSET + CONFIG_XM_LOAD_ADDR;
+
+SECTIONS
+{
+    . = CONFIG_XM_LOAD_ADDR;
+    _sxm = .;
+    .boot ALIGN(0x8) : {
+        *(.irqVectors)
+        *(.secHandlers)
+        *(.boot.text)
+	}
+
+    . = . + CONFIG_XM_OFFSET - CONFIG_XM_LOAD_ADDR;
+    .text ALIGN(8): AT (ADDR (.text) + PHYSOFFSET) {
+        *(.vboot.text)
+        *(.text)
+    . = ALIGN(0x00001000);
+    _nonSecExceptions = . ;
+        *(.nsecArea.ExcVector)
+    _nonSecureHandlers = . ;
+        *(.nsecArea.Handlers)
+        _NSecArea = .;
+        *(.nsecArea.text)
+        _EndNSecArea = .;
+        *(.nsecArea)
+    }
+
+    .xmHdr ALIGN(8): AT (ADDR (.xmHdr) + PHYSOFFSET) {
+        *(.xmHdr)
+    }
+
+    .rsv_hwirqs ALIGN(8) : AT (ADDR (.rsv_hwirqs) + PHYSOFFSET){
+    	rsvHwIrqs = .;
+        *(.rsv_hwirqs)
+	eRsvHwIrqs = .;
+    }
+
+    .rsv_ioports ALIGN(8) : AT (ADDR (.rsv_ioports) + PHYSOFFSET){
+    	rsvIoPorts = .;	 
+        *(.rsv_ioports)
+	eRsvIoPorts = .;
+    }
+
+    .rsv_physpages ALIGN(8) : AT (ADDR (.rsv_physpages) + PHYSOFFSET) {
+        rsvPhysPages = .;
+        *(.rsv_physpages)
+        eRsvPhysPages = .;
+    }
+
+    .rodata ALIGN(8) :  AT (ADDR (.rodata) + PHYSOFFSET) {
+        asmHypercallsTab = .;
+        *(.ahypercallstab)
+        hypercallsTab = .;
+        *(.hypercallstab)
+        hypercallFlagsTab = .;
+        *(.hypercallflagstab)
+
+	. = ALIGN(8);
+	exPTable = .;
+	*(.exptable)
+	LONG(0);
+        LONG(0);
+
+	. = ALIGN(8);
+	kDevSetup = .;
+	*(.kdevsetup)
+	LONG(0);
+	. = ALIGN(8);
+	objectSetupTab = .;
+	*(.objsetuptab)
+	LONG(0);
+
+        . = ALIGN(8);
+        *(.rodata)
+        *(.rodata.*)
+        *(.got)
+        *(.eh_frame)
+    }
+
+    .build_info ALIGN(8) :  AT (ADDR (.build_info) + PHYSOFFSET) {
+    	buildInfo = .;
+        *(.kbuild_info)
+        *(.build_info)
+	BYTE(0);
+    }
+
+    .ARM.extab ALIGN(8):  AT (ADDR (.ARM.extab) + PHYSOFFSET) {
+        *(.ARM.extab)       
+    }
+
+    .ARM.exidx ALIGN(8):  AT (ADDR (.ARM.exidx) + PHYSOFFSET) {
+        __exidx_start = .;
+        *(.ARM.exidx)
+        __exidx_end = .;
+    }
+
+    . = CONFIG_XM_LOAD_ADDR + 15*1024*1024 + PHYSOFFSET;
+	XM_PCTRLTAB_VADDR_BASE = .;
+	. = . + 1 * 1024 * 1024;
+	_xm_nonsec_stack_top = .;
+	_xm_nonsec_stack = _xm_nonsec_stack_top - 4 * 1024;
+	
+    . = CONFIG_XM_LOAD_DATA_ADDR;
+    .data ALIGN(8) : AT(ADDR(.ARM.exidx)+SIZEOF(.ARM.exidx)) {
+        _spdata = LOADADDR(.data);
+    	_sdata = .;
+        *(.vboot.data)
+        *(.data)
+	_edata = .;
+	sysResetCounter = .;
+	LONG(0);
+	resetStatusInit = .;
+	LONG(0);
+	sysResetStatus = .;
+	LONG(0);
+	_cpdata = .;
+	LONG(0);
+#ifdef CONFIG_SMP_SUPPORT
+	resetMask = .;
+	LONG(0);
+#endif
+    }
+
+    .bss ALIGN(8) :  AT (ADDR (.bss) + PHYSOFFSET) {
+        _sbss = .;
+        *(COMMON)
+        *(.bss)
+        . = ALIGN(4*4*1024);
+        _defaultPtdL1S = .;
+        . = . + 4*4*1024;
+        _defaultPtdL1NS = .;
+        . = . + 4*4*1024;
+        _ebss = .; 
+	. = ALIGN(8);
+	_scdata = .;
+	. = . + SIZEOF(.data);
+	_ecdata = .;
+    }
+/*
+    __exidx_start = .;
+    .ARM.exidx : { *(.ARM.exidx*) }
+    __exidx_end = .;
+*/
+    . = ALIGN(16*1024);
+    xmcTab = .;
+    physXmcTab = . + PHYSOFFSET;
+    _exm = . + PHYSOFFSET;
+    /DISCARD/ : {
+        *(.note)
+        *(.comment*)
+    }
+}
+

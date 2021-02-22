@@ -1,0 +1,275 @@
+ # Changelog:
+ # [10/12/15:XM-ARM-2:SPR-150715-03:#73] Add cache enable label.
+ # [16/06/16:CP-160616-01:#113] Add ZYNQ ZC7030 board into configuration.
+
+
+mainmenu "XM Configuration"
+
+  ############
+ # ARCH DEF #
+############
+config ARM
+       def_bool y
+
+config HWIRQ_PRIO_LBS
+       def_bool y
+
+#config ARCH_MMU_BYPASS
+#	def_bool y
+
+#config HWIRQ_PRIO_FBS
+#       def_bool y
+
+  ########
+ # IRQS #
+########
+config NO_HWIRQS
+       int
+       default "96" if ZYNQ
+
+  ##############
+ # ENDIANNESS #
+##############
+config TARGET_LITTLE_ENDIAN
+       depends on ZYNQ
+       def_bool y       
+
+  #############
+ # PROCESSOR #
+#############
+menu "Processor"
+
+choice
+     prompt "ARM cpu"
+     default CORTEX_A9
+config CORTEX_A9
+       bool "Cortex-A9"
+       --help---
+	Select this for a Cortex-A9 processor.
+endchoice
+
+  ############
+ # PLATFORM #
+############
+choice
+     prompt "Board"
+     default ZEDBOARD_BOARD
+config ZEDBOARD_BOARD
+       bool "ZEDBOARD"
+       --help---
+       Select this for Xilinx ZedBoard Xilinx Zynq-7000.
+config ZC706_BOARD
+       bool "ZYNQ ZC706"
+       --help---
+       Select this for Xilinx Zynq-7000 All Programmable SoC ZC706 Evaluation Kit.
+config ZC7030_BOARD
+       bool "ZYNQ ZC7030"
+       --help---
+       Select this for Xilinx Zynq-7000 All Programmable SoC ZC7030.
+config OVPSIM
+       bool "Imperas Simulator - OVPSIM"
+       --help---
+       Select this for a Simulated Platform using Imperas OVPSim.
+endchoice
+
+  ###################
+ # SIMULATED BOARD #
+###################
+choice
+	prompt "Simulated Board"
+	default ZEDBOARD_SIM
+	depends on OVPSIM
+
+config ZEDBOARD_SIM
+       bool "ZEDBOARD"
+       --help---
+       Select this for a SIMULATED ZedBoard Xilinx Zynq-7000.
+config ZC706_SIM
+       bool "ZC706"
+       --help---
+       Select this for a SIMULATED Zynq-7000 All Programmable SoC ZC706.
+config ZC7030_SIM
+       bool "ZC7030"
+       --help---
+       Select this for a SIMULATED Zynq-7000 All Programmable SoC ZC7030.
+endchoice
+
+  #########
+ # BOARD #
+#########
+config ZEDBOARD
+	def_bool y
+	depends on ZEDBOARD_SIM||ZEDBOARD_BOARD
+
+config ZC706
+    def_bool y
+    depends on ZC706_SIM||ZC706_BOARD
+
+config ZC7030
+    def_bool y
+    depends on ZC7030_SIM||ZC7030_BOARD
+
+config ZYNQ
+    def_bool y
+    depends on ZEDBOARD||ZC706||ZC7030
+
+  #################
+ # COOPROCESSORS #
+#################
+config VFP_EXTENSION
+       def_bool y
+       depends on ZYNQ
+
+  #######################
+ # MULTIPROCESSOR DEFS #
+#######################
+
+choice
+     prompt "Multicore support"
+     default MULTICORE_SUPPORT_DISABLED
+config MULTICORE_SUPPORT_DISABLED
+       bool "None"
+       --help---
+       Select this to disable multicore support.
+#config AMP_SUPPORT
+#       bool "AMP support"
+#       --help---
+#	Select this to enable AMP support.
+config SMP_SUPPORT
+       bool "SMP support"
+       --help---
+	Select this to enable SMP support.
+endchoice
+
+config NO_CPUS
+       int "Number of CPUs supported"
+       default "2" if (ZEDBOARD)
+       default "1" if (!ZEDBOARD)
+       depends on SMP_SUPPORT
+
+config MULTICORE_SUPPORT
+       bool
+       default "n" if (!AMP_SUPPORT&&!SMP_SUPPORT)
+       default "y" if (AMP_SUPPORT||SMP_SUPPORT)
+
+  #########################
+ # MEMORY PROTECTION SYS #
+#########################
+
+config MMU
+       def_bool y
+       depends on ZYNQ
+
+#config WATCHDOG
+#       bool "Enable watchdog"
+#       default n
+#       depends on SPW_RTC
+
+#config WATCHDOG_NMAF
+#       int "Reset watchdog every N MAFs"
+#       default 1
+#       depends on WATCHDOG
+
+#config WATCHDOG_TIMEOUT
+#       int "Watchdog timeout"
+#       default 5000000
+#       depends on WATCHDOG        
+
+#config AMBA_BUS_PNP
+#        bool "Support AMBA bus PnP"
+#        default y
+#        depends on LEON3||LEON4
+
+#config UART_TIMEOUT
+#       int
+#       default 500 if !UART_THROUGH_DSU
+#       default 120000 if UART_THROUGH_DSU
+
+config ENABLE_CACHE
+       def_bool y
+       depends on ZYNQ
+
+config ENABLE_CACHE_L2
+       bool "Enable L2 cache"
+       default y
+       depends on ENABLE_CACHE
+
+choice
+       prompt "Select L2 cache policy"
+       default CACHE_L2_POLICY_WB_WA
+       depends on ENABLE_CACHE_L2
+
+config CACHE_L2_POLICY_WB_WA
+       bool "Write-back/write-allocate"
+       --help---
+       Select this for a write-back/write-allocate L2 cache policy.
+
+config CACHE_L2_POLICY_WT_NWA
+       bool "Write-through/no write-allocate"
+       --help---
+       Select this for a write-through/no write-allocate L2 cache policy.
+       
+config CACHE_L2_POLICY_WB_NWA
+       bool "Write-back/no write-allocate"
+       --help---
+       Select this for a write-back/no write-allocate L2 cache policy.
+
+endchoice
+
+
+#config ENABLE_CACHE
+#       bool "Enable cache"
+#       default y
+
+#config CACHE_SNOOP
+#       bool "Enable cache snoop"
+#       depends on ENABLE_CACHE
+#       default y
+
+#config CACHE_IBURST_FETCH
+#       bool "Enable instruction burst fetch"
+#       depends on ENABLE_CACHE
+#       default y
+
+#config FLUSH_CACHE_AFTER_CS
+#       bool "Flush cache after context switch"
+#       depends on ENABLE_CACHE
+#       default y
+
+#choice
+#        prompt "Select L2 cache write policy"
+#        default COPY_BACK
+#        depends on ENABLE_CACHE
+
+#config COPY_BACK
+#       bool "Copy-back"
+
+#config WRITE_THROUGH
+#       bool "Write-through"
+
+#endchoice
+
+#config WA_PROTECT_MMAP_PREG_WPOINT
+#       def_bool y
+#       depends on GR_CPCI_AT697E
+
+endmenu
+
+menu "Physical memory layout"
+config XM_LOAD_ADDR
+       hex "XM load address"
+       default "0x20000000" if ZYNQ
+
+config XM_LOAD_DATA_ADDR
+       hex "XM load data address"
+       default "0x21000000" if ZYNQ
+
+
+config XM_OFFSET
+       hex "XM virtual address"
+       default XM_LOAD_ADDR if !MMU
+       default "0x20000000" if (MMU && ZYNQ)
+
+endmenu
+
+source "kernel/Kconfig"
