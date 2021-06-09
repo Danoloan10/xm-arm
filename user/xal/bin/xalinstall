@@ -12,8 +12,15 @@ XAL=\
 
 	user/xal/include
 	user/xal/include/*.h
+
 	user/xal/include/arch
 	user/xal/include/arch/*.h
+
+	user/xal/include/c++/*
+	user/xal/include/c++/ext
+	user/xal/include/c++/ext/*.h
+	user/xal/include/c++/bits
+	user/xal/include/c++/bits/*.h
 
 	user/xal/lib/
 	user/xal/lib/loader.lds
