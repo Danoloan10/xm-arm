@@ -15,6 +15,10 @@
 #ifndef _XAL_CTYPE_H_
 #define _XAL_CTYPE_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static inline xm_s32_t isdigit(xm_s32_t ch) {
     return (xm_u32_t)(ch - '0') < 10u;
 }
@@ -32,5 +36,9 @@ static inline xm_s32_t isalnum (xm_s32_t ch) {
     return (xm_u32_t)((ch | 0x20) - 'a') < 26u  ||
 	(xm_u32_t)(ch - '0') < 10u;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
