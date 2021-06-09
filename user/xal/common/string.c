@@ -119,6 +119,17 @@ ssize_t strncmp(const char *s1, const char *s2, size_t n)
 	return 0;
 }
 
+size_t strnlen(const char *s, size_t len)
+{
+	size_t i;
+	if (!s) return 0;
+	for (i = 0; (i < len); ++s){
+		if (*s) ++i;
+		else len = i;
+	}
+	return i;
+}
+
 char *strncpy(char *dest, const char *src, size_t n)
 {
 	xm_s32_t j;
