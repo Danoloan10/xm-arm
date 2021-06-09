@@ -114,7 +114,7 @@ struct xmcIoPort {
     xm_u32_t type;
 #define XM_IOPORT_RANGE 0
 #define XM_RESTRICTED_IOPORT 1
-    union {
+    union xmcIoPortUnion {
 	struct xmcIoPortRange {
 	    xmIoAddress_t base;
 	    xm_s32_t noPorts;
@@ -124,7 +124,7 @@ struct xmcIoPort {
 	    xm_u32_t mask;
 #define XM_DEFAULT_RESTRICTED_IOPORT_MASK (~0)
 	} restricted;
-    };
+    } portUnion;
 };
 #endif /*__ASSEMBLY__*/
 #endif /*_XM_ARCH_XMCONF_H_*/

@@ -15,6 +15,14 @@
 #ifndef _XAL_H_
 #define _XAL_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern void XALHalt(char *msg, ...);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

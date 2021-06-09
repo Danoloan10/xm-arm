@@ -22,6 +22,10 @@
 #include <arch/irqs.h>
 #include <xm.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //#define XAL_XMEXT_TRAP(_xmtrap)  ((( _xmtrap ) - XM_VT_EXT_FIRST)+224)
 
 typedef void (*exceptionHandler_t)(trapCtxt_t *);
@@ -51,5 +55,9 @@ extern xm_s32_t InstallSwiHandler(xm_s32_t swiNr, swiHandler_t handler);
 extern void SetupSwi(void);
 
 #endif /*CONFIG_ARM*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /*_XAL_IRQS_H_*/
