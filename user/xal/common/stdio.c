@@ -20,6 +20,7 @@
  */
 
 #include <stdarg.h>
+#include <stddef.h>
 #include <string.h>
 #include <xm.h>
 
@@ -229,7 +230,7 @@ int dbl2stri(char *s, double dbl, unsigned dec_digits, int always_decimal)
 
 #define CHECKSTR(strStart, strPtr, strMaxLen) ((strPtr - strStart) >= strMaxLen)
 
-xm_s32_t vsnprintf(char *s, xm_s32_t nc, const char * __restrict fmt, va_list ap)
+ssize_t vsnprintf(char *s, xm_s32_t nc, const char * __restrict fmt, va_list ap)
 {
 	const char *p;
 	char *bs, *sval;
@@ -366,18 +367,18 @@ xm_s32_t vsnprintf(char *s, xm_s32_t nc, const char * __restrict fmt, va_list ap
 	return (s - bs);
 }
 
-xm_s32_t vsprintf(char *s, const char *fmt, va_list ap)
+ssize_t vsprintf(char *s, const char *fmt, va_list ap)
 {
-	xm_s32_t n = 0;
+	ssize_t n = 0;
 
 	n = vsnprintf(s, 1024, fmt, ap);
 
 	return n;
 }
 
-xm_s32_t vprintf(const char * __restrict fmt, va_list ap)
+ssize_t vprintf(const char * __restrict fmt, va_list ap)
 {
-	xm_s32_t n = 0;
+	ssize_t n = 0;
 	static char str[1024];
 
 	n = vsnprintf(str, sizeof(str), fmt, ap);
@@ -386,9 +387,9 @@ xm_s32_t vprintf(const char * __restrict fmt, va_list ap)
 	return n;
 }
 
-xm_s32_t snprintf(char *s, xm_s32_t nc, const char *fmt, ...)
+ssize_t snprintf(char *s, xm_s32_t nc, const char *fmt, ...)
 {
-	xm_s32_t n = 0;
+	ssize_t n = 0;
 	va_list ap;
 
 	memset(s, 0, nc);
@@ -399,9 +400,9 @@ xm_s32_t snprintf(char *s, xm_s32_t nc, const char *fmt, ...)
 	return n;
 }
 
-xm_s32_t sprintf(char *str, const char *fmt, ...)
+ssize_t sprintf(char *str, const char *fmt, ...)
 {
-	xm_s32_t n = 0;
+	ssize_t n = 0;
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -411,12 +412,11 @@ xm_s32_t sprintf(char *str, const char *fmt, ...)
 	return n;
 }
 
-
-extern xm_s32_t printf(const char * __restrict fmt, ...) __attribute__ ((format (gnu_printf, 1, 2)));
-xm_s32_t printf(const char * __restrict fmt, ...)
+extern ssize_t printf(const char * __restrict fmt, ...) __attribute__ ((format (gnu_printf, 1, 2)));
+ssize_t printf(const char * __restrict fmt, ...)
 {
 	va_list ap;
-	xm_s32_t n = 0;
+	ssize_t n = 0;
 
 	va_start(ap, fmt);
 	n = vprintf(fmt, ap);

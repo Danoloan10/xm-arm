@@ -26,8 +26,8 @@ extern "C" {
 #define offsetof(_type, _member) ((xmSize_t) &((_type *)0)->_member)
 #endif
 
-typedef xm_u32_t size_t;
-typedef xm_s32_t ssize_t;
+typedef xmSize_t  size_t;
+typedef xmSSize_t ssize_t;
 
 #ifdef __cplusplus
 }
