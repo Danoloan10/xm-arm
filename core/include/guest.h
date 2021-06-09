@@ -157,21 +157,21 @@ typedef struct {
 
 static inline void xmSetBit(xmWord_t bm[], xm_u32_t bp, xm_s32_t maxBits) {
     xm_u32_t e=bp>>XM_LOG2_WORD_SZ, b=bp&((1<<XM_LOG2_WORD_SZ)-1);
-    if (bp>=maxBits)
+    if (bp>=(xm_u32_t) maxBits)
         return;
     bm[e]|=(1<<b);
 }
 
 static inline void xmClearBit(xmWord_t bm[], xm_u32_t bp, xm_s32_t maxBits) {
     xm_u32_t e=bp>>XM_LOG2_WORD_SZ, b=bp&((1<<XM_LOG2_WORD_SZ)-1);
-    if (bp>=maxBits)
+    if (bp>=(xm_u32_t) maxBits)
         return;
     bm[e]&=~(1<<b);
 }
 
 static inline void xmClearBitmap(xmWord_t bm[], xm_s32_t maxBits) {
     xm_u32_t e;
-    for (e=0; e<((maxBits&((1<<(XM_LOG2_WORD_SZ))-1))?
+    for (e=0; e<(xm_u32_t)((maxBits&((1<<(XM_LOG2_WORD_SZ))-1))?
                  (maxBits>>XM_LOG2_WORD_SZ)+1:
                  (maxBits>>XM_LOG2_WORD_SZ)); e++)
         bm[e]=0;
