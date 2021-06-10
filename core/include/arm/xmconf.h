@@ -16,6 +16,10 @@
  * - [09/02/16:XM-ARM-2:SPR-151125-01:#97] Define Hypervisor Features tags XM_HYP_FEAT... .
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef _XM_ARCH_XMCONF_H_
 #define _XM_ARCH_XMCONF_H_
 #ifndef __ASSEMBLY__
@@ -110,11 +114,19 @@ enum hypFeatures_e{
 #endif /*__ASSEMBLY__*/
 //
 //// [base, end[
-struct xmcIoPort {
-    xm_u32_t type;
+
 #define XM_IOPORT_RANGE 0
 #define XM_RESTRICTED_IOPORT 1
+
+#define XM_DEFAULT_RESTRICTED_IOPORT_MASK (~0)
+
+struct xmcIoPort {
+    xm_u32_t type;
+#ifdef __cplusplus
+    union xmcPortUnion {
+#else
     union {
+#endif /*__cplusplus*/
 	struct xmcIoPortRange {
 	    xmIoAddress_t base;
 	    xm_s32_t noPorts;
@@ -122,9 +134,15 @@ struct xmcIoPort {
 	struct xmcRestrictdIoPort {
 	    xmIoAddress_t address;
 	    xm_u32_t mask;
-#define XM_DEFAULT_RESTRICTED_IOPORT_MASK (~0)
 	} restricted;
     };
 };
+
+
 #endif /*__ASSEMBLY__*/
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /*_XM_ARCH_XMCONF_H_*/
