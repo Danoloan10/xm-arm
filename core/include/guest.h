@@ -180,7 +180,7 @@ static inline void xmClearBitmap(xmWord_t bm[], xm_s32_t maxBits) {
 static inline void xmSetBitmap(xmWord_t bm[], xm_s32_t maxBits) {
     xm_u32_t e;
     
-    for (e=0; e<((maxBits&((1<<(XM_LOG2_WORD_SZ))-1))?
+    for (e=0; e<(xm_u32_t)((maxBits&((1<<(XM_LOG2_WORD_SZ))-1))?
                  (maxBits>>XM_LOG2_WORD_SZ)+1:
                  (maxBits>>XM_LOG2_WORD_SZ)); e++)
         bm[e]=~0;
