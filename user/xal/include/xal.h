@@ -21,6 +21,8 @@ extern "C" {
 
 extern void XALHalt(char *msg, ...);
 
+void PartitionMain(void);
+
 #ifdef __cplusplus
 }
 #endif
