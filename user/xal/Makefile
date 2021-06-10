@@ -14,6 +14,7 @@ TARGET_ASFLAGS += -I$(XAL_PATH)/include -I$(ARCH_PATH) --include config.h
 TARG=lib/libxal.a
 OBJS=\
 	$(patsubst %.c,%.o, $(wildcard $(COMMON_PATH)/*.c))\
+	$(patsubst %.cpp,%.o, $(wildcard $(COMMON_PATH)/*.cpp))\
 	$(patsubst %.c,%.o, $(wildcard $(ARCH_PATH)/*.c))\
 	$(patsubst %.S,%.o, $(wildcard $(ARCH_PATH)/*.S))\
 
