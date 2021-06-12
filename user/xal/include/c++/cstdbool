@@ -1,0 +1,6 @@
+#ifndef _XAL_CXX_BOOL_
+#define _XAL_CXX_BOOL_
+
+#include <stdbool.h>
+
+#endif

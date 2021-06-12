@@ -9,6 +9,7 @@ COMMON_PATH	= $(XAL_PATH)/common
 ARCH_PATH	= $(XAL_PATH)/$(ARCH)
 
 TARGET_CFLAGS += -I$(XAL_PATH)/include -I$(ARCH_PATH) --include config.h
+TARGET_CXXFLAGS += -I$(XAL_PATH)/include -I$(ARCH_PATH) --include config.h
 TARGET_ASFLAGS += -I$(XAL_PATH)/include -I$(ARCH_PATH) --include config.h
 
 TARG=lib/libxal.a
