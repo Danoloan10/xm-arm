@@ -135,7 +135,7 @@ generate_offsets:
 	@$(RM) -f offsets.S
 
 extract_info:
-	@$(HOST_CC) -Wall -O2 -o $(XTRATUM_PATH)/scripts/extractinfo $(XTRATUM_PATH)/scripts/extractinfo.c -DTARGET_OBJCOPY=\"$(TARGET_OBJCOPY)\" --include $(XTRATUM_PATH)/core/include/autoconf.h
+	@$(HOST_CC) -Wall  -o $(XTRATUM_PATH)/scripts/extractinfo $(XTRATUM_PATH)/scripts/extractinfo.c -DTARGET_OBJCOPY=\"$(TARGET_OBJCOPY)\" --include $(XTRATUM_PATH)/core/include/autoconf.h
 	@$(XTRATUM_PATH)/scripts/extractinfo $(XTRATUM_PATH)/core/xm_core 2> $(XM_CORE_PATH)/include/$(ARCH)/ginfo.h
 
 errata_check:

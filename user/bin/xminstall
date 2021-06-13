@@ -102,7 +102,7 @@ EOF
 	esac`
 	
 	`(cd ${XTRATUM_PATH:-.};
-	 echo '#include <xm.h>' | gcc -O2 -x c -I $LIBXM_PATH/include -M -) |
+	 echo '#include <xm.h>' | gcc  -x c -I $LIBXM_PATH/include -M -) |
 		 sed -n '2,$ {s|[^h]$||; p}'`
 )
 

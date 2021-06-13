@@ -3,13 +3,13 @@ LIBXM_PATH=$(XTRATUM_PATH)/user/libxm
 
 check_gcc = $(shell if $(TARGET_CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi)
 
-HOST_CFLAGS = -Wall -O2 -D$(ARCH) -I$(LIBXM_PATH)/include -DHOST
+HOST_CFLAGS = -Wall  -D$(ARCH) -I$(LIBXM_PATH)/include -DHOST
 HOST_LDFLAGS =
 
-TARGET_CFLAGS  = -Wall -O2 -nostdlib -nostdinc -ffreestanding -D$(ARCH) -fno-strict-aliasing -fomit-frame-pointer
+TARGET_CFLAGS  = -Wall  -nostdlib -nostdinc -ffreestanding -D$(ARCH) -fno-strict-aliasing -fomit-frame-pointer
 TARGET_CFLAGS += -I$(LIBXM_PATH)/include --include xm_inc/config.h --include xm_inc/arch/arch_types.h
 
-TARGET_CXXFLAGS  = -Wall -O2 -nostdlib -nostdinc -ffreestanding -D$(ARCH) -fno-strict-aliasing -fomit-frame-pointer -fno-rtti -fno-exceptions
+TARGET_CXXFLAGS  = -Wall  -nostdlib -nostdinc -ffreestanding -D$(ARCH) -fno-strict-aliasing -fomit-frame-pointer -fno-rtti -fno-exceptions
 TARGET_CXXFLAGS += -I$(LIBXM_PATH)/include --include xm_inc/config.h --include xm_inc/arch/arch_types.h
 
 TARGET_CFLAGS_ARCH := $(shell echo $(TARGET_CFLAGS_ARCH))
@@ -31,7 +31,7 @@ TARGET_CXXFLAGS += $(TARGET_CXXFLAGS_ARCH)
 
 #TARGET_CFLAGS += -Wno-comment -Wno-unused-value -Wno-return-type
 
-TARGET_ASFLAGS = -Wall -O2 -D__ASSEMBLY__ -fno-builtin -D$(ARCH)
+TARGET_ASFLAGS = -Wall  -D__ASSEMBLY__ -fno-builtin -D$(ARCH)
 TARGET_ASFLAGS += -I$(LIBXM_PATH)/include -nostdlib -nostdinc --include xm_inc/config.h
 TARGET_ASFLAGS += $(TARGET_ASFLAGS_ARCH) $(TARGET_CFLAGS_ARCH)
 LIBGCC=`$(TARGET_CC) -print-libgcc-file-name $(TARGET_CFLAGS_ARCH)`

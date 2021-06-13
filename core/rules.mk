@@ -18,7 +18,7 @@ TARGET_CFLAGS += $(call check_gcc,-Wno-pointer-sign,)
 TARGET_CFLAGS += $(call check_gcc,-fno-stack-protector,)
 
 ifndef CONFIG_NO_GCC_OPT
-TARGET_CFLAGS += -O2
+TARGET_CFLAGS += 
 endif
 
 TARGET_ASFLAGS = -Wall -D__ASSEMBLY__ -D_XM_KERNEL_ -fno-builtin -D$(ARCH) -nostdlib -nostdinc

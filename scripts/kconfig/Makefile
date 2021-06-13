@@ -4,7 +4,7 @@ all:
 
 include ../../xmconfig
 
-HOST_CFLAGS = -Wall -O2 -D$(ARCH) -Wno-unused-value -Wno-unused-but-set-variable
+HOST_CFLAGS = -Wall  -D$(ARCH) -Wno-unused-value -Wno-unused-but-set-variable
 
 %.o: %.c
 	$(HOST_CC) $(HOST_CFLAGS) -o $@ -c $<

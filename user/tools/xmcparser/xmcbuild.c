@@ -145,7 +145,7 @@ void ExecXmcBuild(char *path, char *in, char *out) {
 #define INCLUDE_PATH "/include"
 
 #define CMD "%s %s -x c %s --include %s --include %s %s -o %s -Wl,--entry=0x%08x,-T%s\n"
-#define CFLAGS "-O2 -Wall -I%s%s -I%s%s -nostdlib -nostdinc"
+#define CFLAGS " -Wall -I%s%s -I%s%s -nostdlib -nostdinc"
 
     DO_MALLOC(cflags, strlen(CFLAGS)
     		+strlen(xmPath)*2
