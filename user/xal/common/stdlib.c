@@ -18,6 +18,8 @@
 #include <stdbool.h>
 #include <xm.h>
 
+#include <stdio.h>
+
 xm_s32_t atoi(const char* s)
 {
     long int v=0;
@@ -156,6 +158,8 @@ void *malloc(size_t size)
 //		nparts = XM_params_get_PTC()->noPhysicalMemAreas;
 //	if (nareas <= 0)
 //		return NULL;
+
+	printf("malloc\n");
 
 	xmPM = XM_get_partition_mmap();
 
