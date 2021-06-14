@@ -29,6 +29,19 @@ SECTIONS
 	_sguest = .;
   	*(.text.init)
   	*(.text)
+
+    __CTOR_LIST__ = .;
+    LONG((__CTOR_END__ - __CTOR_LIST__) / 4 - 2)
+    *(.ctors)
+    LONG(0)
+    __CTOR_END__ = .;
+
+    __DTOR_LIST__ = .;
+    LONG((__DTOR_END__ - __DTOR_LIST__) / 4 - 2)
+    *(.dtors)
+    LONG(0)
+    __DTOR_END__ = .;
+
   }
 
   .rodata ALIGN (8) : {
@@ -51,6 +64,7 @@ SECTIONS
         __exidx_end = .;
   }
 
+  
   .data ALIGN (8) : AT(ADDR(.ARM.exidx)+SIZEOF(.ARM.exidx)) {
     _spdata = LOADADDR(.data);
 	_sdata = .;
@@ -65,7 +79,7 @@ SECTIONS
 	*(.bss)
 	_ebss = .;
   }
-  
+
   _eguest = .;
 
   /DISCARD/ :

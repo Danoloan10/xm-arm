@@ -1,3 +1,5 @@
+ #include <xm.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -19,7 +21,7 @@ typedef struct
 
 void __cxa_pure_virtual()
 {
-    // Do nothing or print an error message.
+	XM_halt_partition(XM_PARTITION_SELF);
 }
 
 atexit_func_entry_t __atexit_funcs[ATEXIT_MAX_FUNCS];
@@ -115,7 +117,35 @@ void __aeabi_finalize(void *f)
 		}
 	}
 }
- 
+
+extern void (*__CTOR_LIST__)();
+extern void (*__DTOR_LIST__)();
+
+void __cxx_ctor()
+{
+#ifdef __cplusplus
+	void (**constructor)() = &__CTOR_LIST__;
+	int total = *(int *)constructor;
+	constructor++;
+	while(total--){
+		(*constructor++)();
+	}
+#endif
+}
+
+void __cxx_dtor()
+{
+#ifdef __cplusplus
+	void (**deconstructor)() = &__DTOR_LIST__;
+	int total = *(int *)deconstructor;
+	deconstructor++;
+	while(total--){
+		(*deconstructor++)();
+	}
+#endif
+}
+
+
 #ifdef __cplusplus
 }
 #endif
