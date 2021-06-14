@@ -315,12 +315,16 @@ ModesAndStack:
 
         bl SetupExceptions //Install execptions handlers by default
 
-        bl  SetupVCpus
+        bl SetupVCpus
 
         bl ZynqInit
 
+        bl __cxx_ctor
+
         bl PartitionMain
         
+        bl __cxx_dtor
+
         b EndlessLoop
 
         movw r0, #:lower16:libXmParams

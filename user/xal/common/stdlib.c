@@ -104,7 +104,10 @@ static inline size_t __heap_size(const struct xmPhysicalMemMap *xmPM)
 // TODO revisar: quizás no empieze siempre en mappedAt
 static inline xmAddress_t __memory_start(const struct xmPhysicalMemMap *xmPM)
 {
-	return xmPM->mappedAt;
+//	if (xmPM->flags & XM_MEM_AREA_UNMAPPED)
+		return xmPM->startAddr;
+//	else
+//		return xmPM->mappedAt;
 }
 
 static inline struct __buddy_entry *__buddy_list_start
