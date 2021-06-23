@@ -16,10 +16,18 @@
 #define _USER_LIBXM_INCLUDE_ARM_ARCHXM_H__
 
 //#include <xm.h>
+//
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifndef __ASSEMBLY__
 struct libXmArchParams {
 };
 #endif /*__ASSEMBLY__*/
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif /*_USER_LIBXM_INCLUDE_ARM_ARCHXM_H__*/

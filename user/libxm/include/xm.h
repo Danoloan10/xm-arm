@@ -30,6 +30,10 @@
 #include <xm_inc/hypercalls.h>
 #include <xm_inc/guest.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern struct libXmParams {
     partitionControlTable_t *partCtrlTab;
     struct xmPhysicalMemMap *partMemMap;
@@ -61,5 +65,9 @@ static inline xmId_t XM_get_number_vcpus(void){
 #include <status.h>
 
 #endif /* __ASSEMBLY__ */
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif /* _LIB_XM_H_ */

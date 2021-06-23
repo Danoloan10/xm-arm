@@ -27,6 +27,10 @@
 //#define TO_STR(x) __STR(x)
 #define ASMLINK
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef __ASSEMBLY__
 
 #include <xm_inc/linkage.h>
@@ -179,5 +183,9 @@ extern xm_s32_t XM_arm_hm_raise_event(xm_u32_t hmEvent, void * dataEvent);
         .long 0x24786879
 
 #endif /* __ASSEMBLY__ */
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif /* _ARCH_LIB_XM_HYPERCALLS_H_ */

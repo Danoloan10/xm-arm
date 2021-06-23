@@ -17,6 +17,14 @@
 
 #include <xm.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern void init_arch_libxm(void);
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif

@@ -22,6 +22,10 @@
 #define XEF_INCORRECT_VERSION -2
 #define XEF_UNMATCHING_DIGEST -3
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct xefOps {
     void *(*Read)(void *dest, const void *src, unsigned long n);
     void *(*Write)(void *dest, const void *src, unsigned long n);
@@ -41,5 +45,9 @@ struct xefFile {
 extern xm_s32_t XEF_parse_file(xm_u8_t *img, struct xefFile *xefFile, struct xefOps *xefOps);
 extern void *XEF_load_file(struct xefFile *xefFile);
 extern void *XEF_load_custom_file(struct xefFile *xefCustomFile, struct xefCustomFile *customFile);
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif

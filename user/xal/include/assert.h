@@ -17,10 +17,15 @@
 
 #ifdef _DEBUG_
 
-#include <xal.h>
+#include <xm.h>
+#include <stdio.h>
 
-#define assert(exp)  \
-    ((exp)?0:LHalt(__FILE__":%u: failed assertion `"#exp"'\n", __LINE__))
+#define assert(exp) do { \
+    if(!(exp)) { \
+		printf(__FILE__":%u: failed assertion `"#exp"'\n", __LINE__); \
+		XM_halt_partition(XM_PARTITION_SELF); \
+	} \
+} while (0);
 
 #define ASSERT(exp) assert(exp)
 

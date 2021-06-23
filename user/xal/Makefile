@@ -17,6 +17,7 @@ OBJS=\
 	$(patsubst %.c,%.o, $(wildcard $(COMMON_PATH)/*.c))\
 	$(patsubst %.cpp,%.o, $(wildcard $(COMMON_PATH)/*.cpp))\
 	$(patsubst %.c,%.o, $(wildcard $(ARCH_PATH)/*.c))\
+	$(patsubst %.cpp,%.o, $(wildcard $(ARCH_PATH)/*.cpp))\
 	$(patsubst %.S,%.o, $(wildcard $(ARCH_PATH)/*.S))\
 
 libs: links $(TARG)

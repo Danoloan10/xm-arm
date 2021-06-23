@@ -17,6 +17,10 @@
 
 #include <xm_inc/config.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct xefContainerFile {
     struct xmefContainerHdr *hdr;
     struct xmefFile *fileTab;
@@ -30,5 +34,9 @@ struct xefContainerFile {
 #define CONTAINER_UNMATCHING_DIGEST -3
 
 extern xm_s32_t XEF_parse_container(xm_u8_t *img, struct xefContainerFile *pack);
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif

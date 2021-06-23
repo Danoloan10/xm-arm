@@ -33,11 +33,20 @@ XAL=\
 	user/xal/examples
 	user/xal/examples/Makefile
 
+	user/xal/examples/malloc
+	user/xal/examples/malloc/*
+
+	user/xal/examples/c++
+	user/xal/examples/c++/*
+
+	user/xal/examples/bench_mem
+	user/xal/examples/bench_mem/*
+
+	user/xal/examples/bench_cpu
+	user/xal/examples/bench_cpu/*
+
 	user/xal/examples/hello-world
 	user/xal/examples/hello-world/*
-
-	user/xal/examples/hello-world-smp
-	user/xal/examples/hello-world-smp/*
 
 	user/xal/examples/example.001
 	user/xal/examples/example.001/*

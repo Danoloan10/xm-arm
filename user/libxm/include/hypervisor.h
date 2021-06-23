@@ -27,8 +27,16 @@
 
 #define XM_PARTITION_SELF (XM_params_get_PCT()->id)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Partition management */
 extern __stdcall xm_s32_t XM_write_console(char *buffer, xm_s32_t length);
 extern __stdcall xm_s32_t XM_memory_copy(xmId_t destId, xm_u32_t destAddr, xmId_t srcId,  xm_u32_t srcAddr, xm_u32_t size);
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif

@@ -19,8 +19,16 @@
 #include <xm_inc/objdir.h>
 #include <xm_inc/objects/status.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern __stdcall xm_s32_t XM_get_partition_status(xmId_t id, xmPartitionStatus_t *status);
 extern __stdcall xm_s32_t XM_get_system_status (xmSystemStatus_t  *status);
 extern __stdcall xm_s32_t XM_get_plan_status(xmPlanStatus_t *status);
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif

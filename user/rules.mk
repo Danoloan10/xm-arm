@@ -19,7 +19,6 @@ TARGET_ASFLAGS_ARCH := $(shell echo $(TARGET_ASFLAGS_ARCH))
 
 # disable pointer signedness warnings in gcc 4.0
 TARGET_CFLAGS += $(call check_gcc,-Wno-pointer-sign,)
-TARGET_CXXFLAGS += $(call check_gcc,-Wno-pointer-sign,)
 # disable stack protector in gcc 4.1
 TARGET_CFLAGS += $(call check_gcc,-fno-stack-protector,)
 TARGET_CXXFLAGS += $(call check_gcc,-fno-stack-protector,)

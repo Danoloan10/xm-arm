@@ -18,6 +18,8 @@
 #include <stdbool.h>
 #include <xm.h>
 
+#include <stdio.h>
+
 xm_s32_t atoi(const char* s)
 {
     long int v=0;
@@ -71,43 +73,23 @@ xm_s32_t atoi(const char* s)
 /* exit: ??? */
 
 
-
-#define BLOCK_BYTE_ORDER 6 // 64B, p = 3,125%
-#define BLOCK_BYTE_SIZE  ( 1 << BLOCK_BYTE_ORDER )
-#define STACK_SIZE_TOTAL (STACK_SIZE - STACK_SIZE_EXCPT)
-
 struct __buddy_entry {
 	bool free;           // u8 - 1B
 	xm_u8_t order;       // u8 - 1B
 };
 
-static inline size_t __mem_size(const struct xmPhysicalMemMap *xmPM)
-{
-	return (size_t) xmPM->size;
-}
-
-static inline size_t __n_buddy_blocks(const struct xmPhysicalMemMap *xmPM)
-{
-	return (size_t) ((__mem_size(xmPM) - STACK_SIZE_TOTAL) / (BLOCK_BYTE_SIZE + sizeof(struct __buddy_entry)));
-}
-
+// N = M / ( 2^k + T )
 static inline size_t __buddy_list_size(const struct xmPhysicalMemMap *xmPM)
 {
-	return (size_t) __n_buddy_blocks(xmPM) * sizeof(struct __buddy_entry);
+	return (size_t)
+		(xmPM->size / (BLOCK_BYTE_SIZE + sizeof(struct __buddy_entry)));
 }
 
+// H = M - N * T
 static inline size_t __heap_size(const struct xmPhysicalMemMap *xmPM)
 {
-	return (size_t) __mem_size(xmPM) - __buddy_list_size(xmPM);
-}
-
-// TODO revisar: quizás no empieze siempre en mappedAt
-static inline xmAddress_t __memory_start(const struct xmPhysicalMemMap *xmPM)
-{
-//	if (xmPM->flags & XM_MEM_AREA_UNMAPPED)
-		return xmPM->startAddr;
-//	else
-//		return xmPM->mappedAt;
+	return (size_t) xmPM->size
+		- (__buddy_list_size(xmPM) * sizeof(struct __buddy_entry));
 }
 
 static inline struct __buddy_entry *__buddy_list_start
@@ -115,17 +97,19 @@ static inline struct __buddy_entry *__buddy_list_start
 		const struct xmPhysicalMemMap *xmPM
 	)
 {
-	return (struct __buddy_entry *) __memory_start(xmPM);
+	return (struct __buddy_entry *) ADDR2PTR(
+			xmPM->startAddr + __heap_size(xmPM)
+		);
 }
 
 static inline xmAddress_t __heap_start(const struct xmPhysicalMemMap *xmPM)
 {
-	return __memory_start(xmPM) + __buddy_list_size(xmPM);
+	return xmPM->startAddr;
 }
 
 static inline xm_u8_t __min_greater_order(size_t size)
 {
-	xm_u8_t order = 0;
+	xm_u8_t order = ((size & (size - 1)) == 0) ? 0 : 1;
 	while (size >>= 1) order++;
 
 	if (order > BLOCK_BYTE_ORDER) {
@@ -140,53 +124,60 @@ static inline xm_u8_t __min_greater_order(size_t size)
 struct __buddy_entry *buddy_list = NULL;
 size_t buddy_list_size = 0;
 
+struct xmPhysicalMemMap *xmPM = NULL;
+
 void *malloc(size_t size)
 {
 	// zedboard: 512MB
-	
-	// static const xm_s32_t nareas = -1;
 
-	struct xmPhysicalMemMap *xmPM;
-	//xm_u32_t partno = 0;
-	xm_u8_t order;
-	int i, j;
+	xm_u8_t order, target_order;
+	xm_u32_t buddy, block;
 
 	void *mem = NULL;
 
-	//TODO añadir más comprobaciones
+	if (xmPM == NULL) {
+		struct xmPhysicalMemMap *iter = XM_get_partition_mmap();
 
-//	if (nareas <= 0) 
-//		nparts = XM_params_get_PTC()->noPhysicalMemAreas;
-//	if (nareas <= 0)
-//		return NULL;
+		int i;
+		for(i = 0; (i < XM_params_get_PCT()->noPhysicalMemAreas) && (xmPM == NULL); i++)
+		{
+			if (iter->flags & XM_MEM_AREA_FLAG0) {
+				xmPM = iter;
+			} else iter++;
+		}
 
-	xmPM = XM_get_partition_mmap();
-
-//	for(partno = 0; partno < nareas || mem != NULL; partno++) {
-//		// TODO terminar
-//		xmPM++;
-//	}
+		if (xmPM == NULL)
+			return NULL;
+	}
 
 	if (buddy_list == NULL) {
 		buddy_list      = __buddy_list_start(xmPM);
 		buddy_list_size = __buddy_list_size (xmPM);
+		buddy_list[0].free  = true;
+		buddy_list[0].order =  __min_greater_order(__heap_size(xmPM));
 	}
 
-	order = __min_greater_order(size);
+	target_order = __min_greater_order(size);
 
-	for (i = 0; (mem == NULL) && (i < buddy_list_size); i += (1 << order)) {
-		bool free = true;
+	for (block = 0; (mem == NULL) && (block < buddy_list_size); block += (1 << target_order)) {
+		if (buddy_list[block].free) {
+			order = buddy_list[block].order;
 
-		for (j = 0; free && j < (i + (1 << order)); j++) {
-			free &= buddy_list[i+j].free;
-		}
+			while (order > target_order) {
+				order--;
 
-		if (free) {
-			for (j = 0; j < (i + (1 << order)); j++) {
-				buddy_list[i+j].free  = false;
-				buddy_list[i+j].order = order;
+				buddy = block ^ order;
+
+				buddy_list[block].order = order;
+
+				buddy_list[buddy].free  = true;
+				buddy_list[buddy].order = order;
 			}
-			mem = ADDR2PTR(__heap_start(xmPM) + (1 << (order + BLOCK_BYTE_ORDER)));
+
+			if (order == target_order) {
+				buddy_list[block].free  = false;
+				mem = ADDR2PTR(__heap_start(xmPM) + (1 << BLOCK_BYTE_ORDER) * block);
+			}
 		}
 	}
 
@@ -195,20 +186,32 @@ void *malloc(size_t size)
 
 void free(void *ptr)
 {
-	xm_u8_t block_start, order;
+	xm_u32_t block, buddy;
+	xm_u8_t order;
 	xmAddress_t address;
-	int i;
 
 	if ((ptr == NULL) || (buddy_list == NULL))
 		return;
 
 	address = PTR2ADDR(ptr);
-	block_start = address >> BLOCK_BYTE_ORDER;
 
-	order = buddy_list[block_start].order;
+	block = (address - __heap_start(xmPM)) >> BLOCK_BYTE_ORDER;
+	buddy_list[block].free = true;
 
-	for (i = block_start; i < block_start + order; i++) {
-		buddy_list[i].free  = true;
-		buddy_list[i].order = 0;
+	order = buddy_list[block].order;
+	buddy = block ^ (1 << order);
+	
+	while (buddy < buddy_list_size
+			&&  buddy_list[buddy].free
+			&& (buddy_list[buddy].order >= order))
+	{
+		order++;
+
+		block >>= order;
+		block <<= order;
+
+		buddy_list[block].order = order;
+
+		buddy = block ^ (1 << order);
 	}
 }

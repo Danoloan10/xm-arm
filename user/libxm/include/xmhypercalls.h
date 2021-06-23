@@ -33,6 +33,10 @@
 #include <xm_inc/arch/arch_types.h>
 #include <xm_inc/objdir.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* <track id="hypercall-list"> */
 
 extern __stdcall xm_s32_t XM_get_gid_by_name(xm_u8_t *name, xm_u32_t entity);
@@ -86,5 +90,9 @@ extern __stdcall xm_s32_t XM_switch_imm_sched_plan(xm_u32_t newPlanId, xm_u32_t 
 
 /* </track id="hypercall-list"> */
 #endif /*__ASSEMBLY__*/
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif /*_LIB_XM_HYPERCALLS_H_*/

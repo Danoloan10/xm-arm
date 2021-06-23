@@ -57,6 +57,7 @@ LIB_XAL=-lxal
 
 #FLAGS
 TARGET_CFLAGS += -I$(XAL_PATH)/include -fno-builtin
+TARGET_CXXFLAGS += -I$(XAL_PATH)/include -fno-builtin
 
 ifneq ($(EXTERNAL_LDFLAGS),y)
 TARGET_LDFLAGS += -u start -u xmImageHdr -T$(XALLIB_PATH)/loader.lds\
@@ -64,7 +65,7 @@ TARGET_LDFLAGS += -u start -u xmImageHdr -T$(XALLIB_PATH)/loader.lds\
 	--start-group $(LIBGCC) $(LIB_XM) $(LIB_XAL) --end-group
 endif
 
-export TARGET_CFLAGS TARGET_LDFLAGS
+export TARGET_CFLAGS TARGET_CFLAGS TARGET_LDFLAGS
 
 # ADDRESS OF EACH PARTITION
 # function usage: $(call xpathstart,partitionid,xmlfile)

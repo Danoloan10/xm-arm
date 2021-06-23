@@ -19,8 +19,16 @@
 #include <xm_inc/objdir.h>
 #include <xm_inc/objects/trace.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern __stdcall xm_s32_t XM_trace_event(xm_u8_t *trace);
 extern __stdcall xm_s32_t XM_trace_read(xmId_t id, xmTraceEvent_t *traceEventPtr, xm_s32_t noTraces);
 extern __stdcall xm_s32_t XM_trace_status(xmId_t id, xmTraceStatus_t *traceStatusPtr);
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif

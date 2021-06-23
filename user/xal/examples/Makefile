@@ -2,7 +2,6 @@ all: examples
 
 DIRS=\
 	hello-world\
-	hello-world-smp\
 	example.001\
 	example.002\
 	example.003\

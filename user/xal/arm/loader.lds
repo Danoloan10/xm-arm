@@ -27,19 +27,33 @@ SECTIONS
   .text ALIGN (8): {
 	. = ALIGN(4K);
 	_sguest = .;
-  	*(.text.init)
-  	*(.text)
+		*(.text.init)
+		*(.text)
   }
 
   .rodata ALIGN (8) : {
 	*(.rodata)
-  	*(.rodata.*)
+		*(.rodata.*)
 	*(.rodata.*.*)
   }
 
   .xmImageHdr ALIGN (8) : {
          *(.xmImageHdr)
   }
+
+  .init_array ALIGN (8): 
+  { 
+    __init_array_start = .; 
+    KEEP (*(.init_array*)) 
+    __init_array_end = .; 
+  } 
+
+  .fini_array ALIGN (8): 
+  { 
+    __fini_array_start = .; 
+    KEEP (*(.fini_array*)) 
+    __fini_array_end = .; 
+  } 
 
   .ARM.extab ALIGN(8) : {
         *(.ARM.extab)
@@ -59,7 +73,7 @@ SECTIONS
   }
 
   .bss ALIGN (8) : AT(LOADADDR(.data)+SIZEOF(.data)) {
-  	*(.bss.noinit)
+		*(.bss.noinit)
 	_sbss = .;
 	*(COMMON)
 	*(.bss)

@@ -19,10 +19,18 @@
 #include <xm_inc/objdir.h>
 #include <xm_inc/objects/hm.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* SPR-150415-04 */
 extern __stdcall xm_s32_t XM_hm_raise_event(xm_u32_t event);
 
 extern __stdcall xm_s32_t XM_hm_read(xmHmLog_t *hmLogPtr, xm_s32_t noLogs);
 extern __stdcall xm_s32_t XM_hm_status(xmHmStatus_t *hmStatusPtr);
+
+#ifdef __cplusplus
+} // extern C
+#endif
 
 #endif

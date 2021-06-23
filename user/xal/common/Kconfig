@@ -4,6 +4,17 @@ config DEBUG
        bool "Debug"
        default n
 
+config MEMORY_MANAGER
+       bool "Memory manager"
+	   default y
+
+if MEMORY_MANAGER
+config BLOCK_BYTE_ORDER
+       int "Block byte order (2^k B per block)"
+	   default "6"
+
+endif
+
 menu "Kernel options"
 config STACK_KB
        int "Stack size (KB)"

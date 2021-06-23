@@ -74,6 +74,10 @@
 
 #define XM_EXTIRQ_SGI_NUM	(0)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef __ASSEMBLY__
 
 typedef struct _irqCtxt {
@@ -98,4 +102,9 @@ extern xm_u32_t checkFPU(xm_u32_t instruction);
 #   endif /*CONFIG_VFP_EXTENSION*/
 
 #endif /*__ASSEMBLY__*/
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /*_XAL_ARCH_IRQS_H_*/

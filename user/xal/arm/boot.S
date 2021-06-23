@@ -319,11 +319,11 @@ ModesAndStack:
 
         bl ZynqInit
 
-        bl __cxx_ctor
+        bl _init
 
         bl PartitionMain
         
-        bl __cxx_dtor
+//      bl _fini
 
         b EndlessLoop
 

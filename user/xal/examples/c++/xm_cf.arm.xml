@@ -7,15 +7,8 @@
         <ProcessorTable>
             <Processor id="0" frequency="400Mhz">
                 <CyclicPlanTable>
-                    <Plan id="0" majorFrame="500ms">
-                        <Slot id="0" start="0ms" duration="250ms" partitionId="0"/>
-                    </Plan>
-                </CyclicPlanTable>
-            </Processor>
-            <Processor id="1" frequency="400Mhz">
-                <CyclicPlanTable>
-                    <Plan id="0" majorFrame="500ms">
-                        <Slot id="0" start="0ms" duration="250ms" partitionId="1"/>
+                    <Plan id="0" majorFrame="200ms">
+                        <Slot id="0" start="0ms" duration="200ms" partitionId="0" />
                     </Plan>
                 </CyclicPlanTable>
             </Processor>
@@ -28,14 +21,10 @@
         <PhysicalMemoryArea size="512KB" />
     </XMHypervisor>
     <PartitionTable>
-        <Partition id="0" name="Partition0" flags="system boot" console="Uart">
+        <Partition id="0" name="Partition0" flags="boot fp" console="Uart">
             <PhysicalMemoryAreas>
-                <Area start="0x10000000" size="256KB" />
-            </PhysicalMemoryAreas>
-        </Partition>
-        <Partition id="1" name="Partition1" flags="system boot" console="Uart">
-            <PhysicalMemoryAreas>
-                <Area start="0x14000000" size="256KB" />
+                <Area name="main" start="0x10000000" size="256KB" />
+                <Area name="heap" flags="flag0" start="0x10040000" size="132MB" />
             </PhysicalMemoryAreas>
         </Partition>
     </PartitionTable>
